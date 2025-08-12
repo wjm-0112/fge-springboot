@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.Category1Mapper">
+    <select id="findAll" resultType="com.neu.entity.Category1">
+        select * from category1 limit #{index},#{size}
+    </select>
+    <select id="findAll1" resultType="com.neu.entity.Category1">
+        select * from category1
+    </select>
+    <delete id="delCategory1" parameterType="com.neu.entity.Category1">
+        delete from category1 where cid=#{cid}
+    </delete>
+    <select id="findById" resultType="com.neu.entity.Category1">
+        select * from category1 where cid=#{cid}
+    </select>
+<!--    修改-->
+    <update id="updateCategory1" parameterType="com.neu.entity.Category1">
+        update category1 set area=#{area} where cid=#{cid}
+    </update>
+    <insert id="addCategory1" parameterType="com.neu.entity.Category1">
+        insert into category1(cid,area) values(#{cid},#{area})
+    </insert>
+</mapper>

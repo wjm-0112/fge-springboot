@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.UserCollectionMapper">
+    <resultMap id="userCollection" type="com.neu.entity.UserCollection">
+        <result property="id" column="id"/>
+        <result property="uname" column="uname"/>
+        <result property="mname" column="mname"/>
+        <result property="time" column="time"/>
+        <association property="mid" javaType="com.neu.entity.Movie">
+            <result property="mid" column="mid"/>
+        </association>
+    </resultMap>
+    <select id="findUserCollection" resultMap="userCollection">
+        select * from user_collection uc, movie m
+        where uc.mid=m.mid
+            limit #{index},#{size}
+    </select>
+    <select id="findUserCollectionMo" resultMap="userCollection">
+        select * from user_collection uc, movie m
+        where uc.mid=m.mid
+          and m.mid =#{mid}
+    </select>
+    <select id="findUserCollectionMo1" resultMap="userCollection">
+        select * from user_collection uc, movie m
+        where uc.mid=m.mid
+        <if test="mname!='' and mname!=null">
+            and mname like concat('%',#{mname},'%')
+        </if>
+        limit #{index},#{size}
+    </select>
+    <delete id="delUserCollection" parameterType="com.neu.entity.UserCollection">
+        delete from user_collection where mid=#{mid.mid}
+    </delete>
+    <select id="findById" resultMap="userCollection">
+        select * from user_collection where id=#{id}
+    </select>
+    <update id="updateUserCollection" parameterType="com.neu.entity.UserCollection">
+        update user_collection set uname=#{uname}, mid=#{mid.mid}, mname=#{mname}, time=#{time}
+        where id=#{id}
+    </update>
+    <insert id="addUserCollection" parameterType="com.neu.entity.UserCollection">
+        insert into user_collection(uname,mid,mname,time)
+        values(#{uname},#{mid.mid},#{mname},NOW())
+    </insert>
+
+    <select id="getAllUserCollection" resultType="com.neu.entity.UserCollection">
+        SELECT * FROM user_collection
+    </select>
+
+<!--    获得当前用户下所有的电影收藏-->
+    <select id="getAllUserCollectionByUname" resultType="com.neu.entity.UserCollection">
+        SELECT * FROM user_collection uc, movie m
+        WHERE uc.mid = m.mid
+            and uname like concat('%',#{uname},'%')
+    </select>
+
+    <select id="selectCollectionsByUser" resultType="com.neu.entity.CollectionMovieVo">
+        SELECT
+            uc.id,
+            uc.uname,
+            uc.mid,
+            uc.mname,
+            uc.time,
+            m.name,
+            m.year,
+            m.area,
+            m.type,
+            m.score,
+            m.poster
+        FROM
+            user_collection uc
+                JOIN
+            movie m ON uc.mid = m.mid
+        WHERE
+            uc.uname = #{uname}
+        ORDER BY
+            uc.time DESC
+    </select>
+</mapper>

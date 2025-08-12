@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.CommentMapper">
+    <resultMap id="commentResult" type="com.neu.entity.Comment">
+        <result property="cid" column="cid"/>
+        <result property="uname" column="uname"/>
+        <result property="mname" column="mname"/>
+        <result property="content" column="content"/>
+        <result property="ctime" column="ctime"/>
+        <association property="mid" javaType="com.neu.entity.Movie">
+            <result property="mid" column="mid"/>
+        </association>
+    </resultMap>
+    <select id="getAllComment" resultMap="commentResult">
+        select * from comment c, movie m
+        where c.mid=m.mid
+    </select>
+
+    <select id="findComment" resultMap="commentResult">
+        select * from comment c, movie m
+        where c.mid=m.mid
+        limit #{index},#{size}
+    </select>
+<!--    模糊查询  根据评论的电影-->
+    <select id="findCommentMo" resultMap="commentResult">
+        select * from comment c, movie m
+        where c.mid=m.mid
+          and c.mid =#{mid}
+    </select>
+<!--   后台评论Mo查询   基于电影名字-->
+    <select id="findCommentMo1" resultMap="commentResult">
+        select * from comment c, movie m
+        where c.mid=m.mid
+          and mname like concat('%',#{mname},'%')
+            limit #{index},#{size}
+    </select>
+    <delete id="delComment">
+        delete from comment where cid=#{cid}
+    </delete>
+<!--    findById-->
+    <select id="findById" resultMap="commentResult">
+        select * from comment c, movie m
+        where c.mid=m.mid
+        and cid=#{cid}
+    </select>
+<!--    updateComment-->
+    <update id="updateComment" parameterType="com.neu.entity.Comment">
+        update comment set uname=#{uname},mid=#{mid.mid},mname=#{mname},content=#{content},ctime=#{ctime}
+        where cid=#{cid}
+    </update>
+    <insert id="addComment" parameterType="com.neu.entity.Comment">
+        insert into comment(uname,mid,mname,content,ctime)
+        values(#{uname},#{mid.mid},#{mname},#{content},NOW())
+    </insert>
+
+<!--    查询当前用户下所有的电影评论-->
+    <select id="getAllCommentByUname" resultMap="commentResult">
+        select * from comment c, movie m
+        where c.mid=m.mid
+          and uname=#{uname}
+    </select>
+
+    <select id="selectCommentsByUser" resultType="com.neu.entity.CommentMovieVO">
+        SELECT
+            c.cid,
+            c.uname,
+            c.mid,
+            c.mname,
+            c.content,
+            c.ctime,
+            m.name,
+            m.year,
+            m.area,
+            m.type,
+            m.score,
+            m.poster
+        FROM
+            comment c
+                JOIN
+            movie m ON c.mid = m.mid
+        WHERE
+            c.uname = #{uname}
+        ORDER BY
+            c.ctime DESC
+    </select>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.UserSeenMapper">
+    <resultMap id="userSeen" type="com.neu.entity.UserSeen">
+        <id property="id" column="id"/>
+        <result property="uname" column="uname"/>
+        <result property="mname" column="mname"/>
+        <result property="time" column="time"/>
+        <association property="mid" javaType="com.neu.entity.Movie">
+            <result property="mid" column="mid"/>
+        </association>
+    </resultMap>
+    <select id="findUserSeen" resultMap="userSeen">
+        select * from user_seen us, movie m
+        where us.mid=m.mid
+            limit #{index},#{size}
+    </select>
+
+    <select id="getAllUserSeen" resultType="com.neu.entity.UserSeen">
+        SELECT * FROM user_seen
+    </select>
+
+    <select id="findUserSeenMo" resultMap="userSeen">
+        select * from user_seen us, movie m
+        where us.mid=m.mid
+          and m.mid =#{mid}
+    </select>
+
+    <select id="findUserSeenMo1" resultMap="userSeen">
+        select * from user_seen us, movie m
+        where us.mid=m.mid
+        <if test="mname!='' and mname!=null">
+            and mname like concat('%',#{mname},'%')
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <insert id="addUserSeen" parameterType="com.neu.entity.UserSeen">
+        insert into user_seen(uname,mid,mname,time)
+        values(#{uname},#{mid.mid},#{mname},NOW())
+    </insert>
+
+    <delete id="delUserSeen" parameterType="com.neu.entity.UserSeen">
+        delete from user_seen where id= #{id}
+    </delete>
+
+    <select id="getAllUserSeenByUname" resultType="com.neu.entity.UserSeen">
+        SELECT * FROM user_seen us, movie m
+        where us.mid=m.mid
+          and uname like concat('%',#{uname},'%')
+    </select>
+
+    <select id="selectSeensByUser" resultType="com.neu.entity.SeenMovieVo">
+        SELECT
+            us.id,
+            us.uname,
+            us.mid,
+            us.mname,
+            us.time,
+            m.name,
+            m.year,
+            m.area,
+            m.type,
+            m.score,
+            m.poster
+        FROM
+            user_seen us
+                JOIN
+            movie m ON us.mid = m.mid
+        WHERE
+            us.uname = #{uname}
+        ORDER BY
+            us.time DESC
+    </select>
+</mapper>

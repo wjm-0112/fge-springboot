@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.MovieMapper">
+    <resultMap id="movieResult" type="com.neu.entity.Movie">
+        <result property="mid" column="mid"/>
+        <result property="name" column="name"/>
+        <result property="time" column="time"/>
+        <result property="director" column="director"/>
+        <result property="actor" column="actor"/>
+        <result property="description" column="description"/>
+        <result property="score" column="score"/>
+        <result property="collection" column="collection"/>
+        <result property="seen" column="seen"/>
+        <result property="year" column="year"/>
+        <result property="poster" column="poster"/>
+        <association property="category1" javaType="com.neu.entity.Category1">
+            <result property="cid" column="cid"/>
+            <result property="area" column="area"/>
+        </association>
+        <association property="category2" javaType="com.neu.entity.Category2">
+            <result property="ccid" column="ccid"/>
+            <result property="type" column="type"/>
+        </association>
+    </resultMap>
+    <select id="findMovie" resultMap="movieResult">
+        select * from movie m,category2 c2,category1 c1
+        where m.type=c2.type and m.area=c1.area
+        limit #{index},#{size}
+    </select>
+    <select id="findAll" resultMap="movieResult">
+        select * from movie m,category2 c2,category1 c1
+        where m.type=c2.type and m.area=c1.area
+    </select>
+    <select id="findMovieMo" resultMap="movieResult">
+        select * from movie m,category2 c2,category1 c1
+        where m.area=c1.area and m.type=c2.type
+        <if test="name!='' and name!=null">
+            and name like concat('%',#{name},'%')
+        </if>
+        limit #{index},#{size}
+    </select>
+    <delete id="delMovie" parameterType="com.neu.entity.Movie">
+        delete from movie where mid=#{mid}
+    </delete>
+    <select id="findById" resultMap="movieResult">
+        select * from movie m,category2 c2,category1 c1
+        where m.type=c2.type and m.area=c1.area and m.mid=#{mid}
+    </select>
+    <update id="updateMovie" parameterType="com.neu.entity.Movie">
+        update movie set name=#{name},time=#{time},director=#{director},actor=#{actor},area=#{category1.area},type=#{category2.type},description=#{description},score=#{score},collection=#{collection},seen=#{seen},year=#{year},poster=#{poster}
+        where mid=#{mid}
+    </update>
+    <insert id="addMovie" parameterType="com.neu.entity.Movie">
+        insert into movie values(#{mid},#{name},#{time},#{director},#{actor},#{category1.area},#{category2.type},#{description},#{score},#{collection},#{seen},#{year},#{poster})
+    </insert>
+    <select id="selectByCategory" resultMap="movieResult">
+        select * from movie m,category2 c2,category1 c1
+        where m.type=c2.type and m.area=c1.area
+        <if test="area!='' and area!=null">
+            and c1.area like concat('%',#{area},'%')
+        </if>
+        <if test="type!='' and type!=null">
+            and c2.type like concat('%',#{type},'%')
+        </if>
+        ORDER BY score DESC
+    </select>
+</mapper>

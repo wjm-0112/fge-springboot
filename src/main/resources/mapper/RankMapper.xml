@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.RankMapper">
+    <select id="findRank" resultType="com.neu.entity.Rank">
+        select * from `rank` limit #{index},#{size}
+    </select>
+    <select id="findRankMo" resultType="com.neu.entity.Rank">
+        select * from `rank`
+        where name like concat('%',#{name},'%')
+        limit #{index},#{size}
+    </select>
+    <delete id="delRank" parameterType="com.neu.entity.Rank">
+        delete from `rank` where rid=#{rid}
+    </delete>
+    <insert id="addRank" parameterType="com.neu.entity.Rank">
+        insert into `rank`(rid,name,score,collection) values(#{rid},#{name},#{score},#{collection})
+    </insert>
+    <select id="findById" resultType="com.neu.entity.Rank">
+        select * from `rank`
+        where r.rid=#{rid}
+    </select>
+    <update id="updateRank" parameterType="com.neu.entity.Rank">
+        update `rank` set name=#{name},score=#{score},collection=#{collection} where rid=#{rid}
+    </update>
+</mapper>

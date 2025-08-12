@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.RateMapper">
+    <resultMap id="rateMap" type="com.neu.entity.Rating">
+        <result property="sid" column="sid"/>
+        <result property="level" column="level"/>
+        <association property="mname" javaType="com.neu.entity.Movie">
+            <result property="name" column="mname"/>
+        </association>
+        <association property="score" javaType="com.neu.entity.Movie">
+            <result property="score" column="score"/>
+        </association>
+    </resultMap>
+    <select id="findRate" resultMap="rateMap">
+        select * from rating r, movie m
+        where r.mname=m.name and r.score=m.score
+            limit #{index},#{size}
+    </select>
+</mapper>

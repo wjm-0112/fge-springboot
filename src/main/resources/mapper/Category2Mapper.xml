@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.mapper.Category2Mapper">
+    <select id="findAll" resultType="com.neu.entity.Category2">
+        select * from category2
+        limit #{index},#{size}
+    </select>
+    <select id="findAll1" resultType="com.neu.entity.Category2">
+        select * from category2
+    </select>
+    <select id="findCategory2Mo" resultType="com.neu.entity.Category2">
+        select * from category2
+        <where>
+            <if test="type!='' and type!=null">
+                and `type` like concat('%',#{type},'%')
+            </if>
+        </where>
+        limit #{index},#{size}
+    </select>
+    <delete id="delCategory2" parameterType="com.neu.entity.Category2">
+        delete from category2 where ccid=#{ccid}
+    </delete>
+    <select id="findById" resultType="com.neu.entity.Category2">
+        select * from category2 c2, category1 c1
+        where c2.cid=c1.cid and c2.ccid=#{ccid}
+    </select>
+    <update id="updateCategory2" parameterType="com.neu.entity.Category2">
+        update category2 set type=#{type} where ccid=#{ccid}
+    </update>
+    <insert id="addCategory2" parameterType="com.neu.entity.Category2">
+        insert into category2(ccid,type) values(#{ccid},#{type})
+    </insert>
+</mapper>
