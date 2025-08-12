@@ -8,7 +8,7 @@
 - 后端：Spring Boot 2.5.4
 - 数据库：MySQL 8.0.20
 - ORM框架：MyBatis 1.3.0
-- 前端：Vue 2.x
+- 前端：Vue 2.6.14
 
 ## 系统功能
 
@@ -60,7 +60,7 @@
 
 ### 系统架构
 采用前后端分离架构：
-- **前端**：Vue 2.x + Element UI
+- **前端**：Vue 2.6.14 + Element UI
 - **后端**：Spring Boot + MyBatis
 - **数据库**：MySQL 8.0
 
